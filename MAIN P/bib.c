@@ -1,5 +1,5 @@
 
-#include "../lib/lib.h"
+#include "../lib/bib.h"
 #include <stdio.h>
 
 void readUINT(unsigned int *i){
