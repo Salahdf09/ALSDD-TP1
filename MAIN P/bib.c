@@ -9,4 +9,10 @@ void readUINT(unsigned int *i){
         printf("%sEnter a valid number: %s",RED,RESET);
     }
 }
- 
+typedef struct {
+    int playerId;                // Unique identifier for the player
+    char pseudonym[50];          // Player's nickname
+    char preferredDomains[100];  // Preferred domains for playing
+    int gamesPlayed;             // Number of games played
+    int totalScore;              // Total score across all games
+} Player; // Define the Player structure 
