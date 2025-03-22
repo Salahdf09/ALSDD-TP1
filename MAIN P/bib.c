@@ -2,9 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
- 
-#define MAX_QUESTIONS 100
-#define MAX_LENGTH 200
+#include "../lib/bib.h"
  
 //colors // to be used to change color text when printing
 #define RESET   "\e[m"
@@ -25,15 +23,6 @@ void readUINT(unsigned int *i){
         printf("%sEnter a valid number: %s",RED,RESET);
     }
 } 
-
-// Define the Question structure
-typedef struct {
-    int questionNumber;          //   id for the question
-    char domain[50];             // Domain of the question
-    char difficultyLevel[10];    // Difficulty level: "facile", "moyen", "difficile"
-    char content[MAX_LENGTH];    // The actual question text
-    char correctAnswer[100];     // The correct answer 
-} Question; 
 
 
 

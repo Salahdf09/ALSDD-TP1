@@ -6,18 +6,8 @@
 #define MAX_LENGTH 200
 
 // Define the Question structure
-typedef struct {
-    int questionNumber;          // Unique identifier for the question
-    char domain[50];             // Domain of the question
-    char difficultyLevel[10];    // Difficulty level: "facile", "moyen", "difficile"
-    char content[MAX_LENGTH];    // The actual question text
-    char correctAnswer[100];     // The correct answer to the question
-} Question;
-typedef struct qst_node{
-    Question value;
-    struct qst_list *next;
-} qst_list;
-// this is qst struct
+
+
 void adminMenu() {
     Question questions[MAX_QUESTIONS];
     int numQuestions = 0;
