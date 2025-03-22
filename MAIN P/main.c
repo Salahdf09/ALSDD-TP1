@@ -13,6 +13,11 @@ typedef struct {
     char content[MAX_LENGTH];    // The actual question text
     char correctAnswer[100];     // The correct answer to the question
 } Question;
+typedef struct qst_node{
+    Question value;
+    struct qst_list *next;
+} qst_list;
+
 void adminMenu() {
     Question questions[MAX_QUESTIONS];
     int numQuestions = 0;
