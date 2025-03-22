@@ -36,6 +36,6 @@ int loadqst(const char *filename, Question questions[], int *numQuestions); // F
 void displayqst(Question questions[], int numQuestions); // Function  for displaying questions
 void modifyqst(Question questions[], int count, int id, const char *newText); // Function  for modifying a question
 void saveqst(const char *filename, Question questions[], int count); // Function  for saving questions to a file
-void deleteqst(Question questions[], int *count, int id); // // Function  for deleting questions to a file
+// void deleteqst(Question questions[], int *count, int id); // // Function  for deleting questions to a file
 
 #endif

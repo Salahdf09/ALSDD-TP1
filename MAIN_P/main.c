@@ -8,7 +8,7 @@
 // Define the Question structure
 
 
-void adminMenu() {
+int adminMenu() {
     Question questions[MAX_QUESTIONS];
     int numQuestions = 0;
     char filename[] = "questions.txt";
@@ -16,7 +16,7 @@ void adminMenu() {
     char newText[MAX_LENGTH];
 
     // Load questions from file
-    if (!loadQuestions(filename, questions, &numQuestions)) {
+    if (!loadqst(filename, questions, &numQuestions)) {
         return 1; 
     }
 
@@ -33,8 +33,8 @@ void adminMenu() {
             case 1:
                 printf("Enter the question ID to delete: ");
                 scanf("%d", &id);
-                deleteQuestion(questions, &numQuestions, id);
-                saveQuestions(filename, questions, numQuestions);
+                // deleteqst(questions, &numQuestions, id);
+                saveqst(filename, questions, numQuestions);
                 break;
             case 2:
                 printf("Enter the question ID to modify: ");
@@ -43,8 +43,8 @@ void adminMenu() {
                 getchar(); 
                 fgets(newText, MAX_LENGTH, stdin);
                 newText[strcspn(newText, "\n")] = '\0'; 
-                modifyQuestion(questions, numQuestions, id, newText);
-                saveQuestions(filename, questions, numQuestions);
+                // modifyqst(questions, numQuestions, id, newText);
+                // modifyqst(filename, questions, numQuestions);
                 break;
             case 3:
                 printf("ASBER MMZL LFONCTION");
@@ -57,7 +57,7 @@ void adminMenu() {
         }
 
         // Display questions after each operation
-        displayQuestions(questions, numQuestions);
+        displayqst(questions, numQuestions);
     }
 }
 
@@ -70,12 +70,12 @@ void playerMenu() {
 int main() {
     int choice;
     do {
-        printf("\033[2J"); 
+        // printf("\033[2J"); 
         printf("%s%s=========== Welcome back ===========%s\n", BOLD, CYAN, RESET);
         printf("%s%sAre you: \n\t%s1) PLAYER \n\t2) Admin\n\t0) Exit...\n", BOLD, YELLOW, BLUE);
         printf("%sEnter your choice: %s", GREEN, RESET);
         readUINT(&choice);
-
+        printf("%d",choice);
         switch (choice) {
             case 1:
                 playerMenu();
