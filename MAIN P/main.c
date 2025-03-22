@@ -17,7 +17,7 @@ typedef struct qst_node{
     Question value;
     struct qst_list *next;
 } qst_list;
-
+// this is qst struct
 void adminMenu() {
     Question questions[MAX_QUESTIONS];
     int numQuestions = 0;
@@ -74,7 +74,6 @@ void adminMenu() {
 // Player menu function (to be implemented)
 void playerMenu() {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////:::
-    ::::::::::::::::::::::::::::::::::::::::::::
     ////////////////////////////////////////////
 // Main function}
 }
