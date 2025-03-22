@@ -4,14 +4,7 @@
 #include <string.h>
 #define MAX_QUESTIONS 100
 #define MAX_LENGTH 200
-// Define the Player structure
-typedef struct {
-    int playerId;                // Unique identifier for the player
-    char nichname[50];           // Player's nickname
-    char Domainspref[100];       // Preferred domains for playing
-    int gamesPlayed;             // Number of games played
-    int totalScore;              // Total score across all games
-} Player;
+
 // Define the Question structure
 typedef struct {
     int questionNumber;          // Unique identifier for the question
@@ -33,12 +26,12 @@ void adminMenu() {
     }
 
     while (1) {
-        printf("\nAdmin Menu:\n");
-        printf("1. Delete a Question\n");
-        printf("2. Modify a Question\n");
-        printf("3. Delete a Player\n");
-        printf("4. Exit\n");
-        printf("Enter your choice: ");
+        printf(  "\nAdmin Menu:\n", BLUE , RESET );
+        printf("1. Delete a Question\n",GREEN,RESET);
+        printf("2. Modify a Question\n",GREEN,RESET);
+        printf("3. Delete a Player\n",GREEN,RESET);
+        printf("4. Exit\n",GREEN,RESET);
+        printf("Enter your choice: ",RED,RESET);
         scanf("%d", &choice);
 
         switch (choice) {
@@ -52,17 +45,17 @@ void adminMenu() {
                 printf("Enter the question ID to modify: ");
                 scanf("%d", &id);
                 printf("Enter the new question text: ");
-                getchar(); // Consume newline left by scanf
+                getchar(); 
                 fgets(newText, MAX_LENGTH, stdin);
                 newText[strcspn(newText, "\n")] = '\0'; 
                 modifyQuestion(questions, numQuestions, id, newText);
                 saveQuestions(filename, questions, numQuestions);
                 break;
             case 3:
-                printf("Delete Player functionality not implemented yet.\n");
+                printf("ASBER MMZL LFONCTION");
                 break;
             case 4:
-                printf("Exiting...\n");
+                printf("Exiting...\n",RED,RESET);
                 return 0;
             default:
                 printf("Invalid choice! Please try again.\n");
@@ -83,7 +76,7 @@ void playerMenu() {
 int main() {
     int choice;
     do {
-        printf("\033[2J"); // Clear screen
+        printf("\033[2J"); 
         printf("%s%s=========== Welcome back ===========%s\n", BOLD, CYAN, RESET);
         printf("%s%sAre you: \n\t%s1) PLAYER \n\t2) Admin\n\t0) Exit...\n", BOLD, YELLOW, BLUE);
         printf("%sEnter your choice: %s", GREEN, RESET);
