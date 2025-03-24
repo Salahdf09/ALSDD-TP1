@@ -26,97 +26,110 @@ void readUINT(unsigned int *i){
 
 
 
-
-int loadqst(const char *filename, Question questions[], int *numQuestions) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        printf("Error \n");
+int loadqst(const char *fname, QList **head) {
+    FILE *fp = fopen(fname, "r");
+    if (fp == NULL) {
+        printf("Error opening file\n");
         return 0; 
     }
 
-    *numQuestions = 0; 
-    char line[MAX_LENGTH * 2]; 
-    while (fgets(line, sizeof(line), file)) {
-        if (*numQuestions >= MAX_QUESTIONS) {
-            printf("Too many questions! Increase MAX_QUESTIONS.\n");
-            break; 
-        };
-        if (sscanf(line, "%d %49s %9s %199[^\n] %99[^\n]",
-                   &questions[*numQuestions].questionNumber,
-                   questions[*numQuestions].domain,
-                   questions[*numQuestions].difficultyLevel,
-                   questions[*numQuestions].content,
-                   questions[*numQuestions].correctAnswer) != 5) {
-            printf("Error line: %s", line);
-            continue; 
+    char line[mq * 2];
+    QList *tail = NULL;
+    int cnt = 0;
+    
+    while (fgets(line, sizeof(line), fp) && cnt < ml ) {
+        QList *newNode = (QList*)malloc(sizeof(QList));
+        if (newNode == NULL) {
+            printf("Memory error\n");
+            break;
         }
+        
+        if (sscanf(line, "%d %49s %9s %199[^\n] %99[^\n]",
+                   &newNode->val.qNum,
+                   newNode->val.domain,
+                   newNode->val.diff,
+                   newNode->val.text,
+                   newNode->val.ans) != 5) {
+            printf("Error in line: %s", line);
+            free(newNode);
+            continue;
+        }
+        
+        newNode->next = NULL;
+        
+        if (*head == NULL) {
+            *head = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+        cnt++;
+    }
 
-        (*numQuestions)++; 
+    fclose(fp);
+    return 1;
+}
+  
 
-    fclose(file); 
-    return 1; 
-    } 
+void showqst(QList *head) {
+    printf("Questions:\n");
+    QList *curr = head;
+    while (curr != NULL) {
+        printf("Q%d:\n", curr->val.qNum);
+        printf("  Domain: %s\n", curr->val.domain);
+        printf("  Level: %s\n", curr->val.diff);
+        printf("  Text: %s\n", curr->val.text);
+        printf("  Answer: %s\n", curr->val.ans);
+        printf("\n");
+        curr = curr->next;
+    }
 }
 
 
-
-
-
-void displayqst(Question questions[], int numQuestions) {           
-        printf("Loaded Questions:\n");
-    for (int i = 0; i < numQuestions; i++) {
-        printf("question %d:\n", questions[i].questionNumber);
-        printf("  Domain: %s\n", questions[i].domain);
-        printf("  Difficulty: %s\n", questions[i].difficultyLevel);
-        printf("  Contente: %s\n", questions[i].content);
-        printf("  Coorection: %s\n", questions[i].correctAnswer);
-        printf("\n");
-    }
-} 
-
-
-
-
-
-
-void modifyqst(Question questions[], int count, int id, const char *newText) {
-    for (int i = 0; i < count; i++) {
-        if (questions[i].questionNumber == id) {
-            // Modify the question text
-            strncpy(questions[i].content, newText, MAX_LENGTH - 1);
-            questions[i].content[MAX_LENGTH - 1] = '\0'; 
-            printf("Question with di: %d  modified \n", id);
+void editqst(QList *head, int id, const char *newTxt) {
+    QList *curr = head;
+    while (curr != NULL) {
+        if (curr->val.qNum == id) {
+            strncpy(curr->val.text, newTxt, mq - 1);
+            curr->val.text[mq - 1] = '\0';
+            printf("Q%d updated\n", id);
             return;
         }
+        curr = curr->next;
     }
-
-    printf("Question with ID %d not found!\n", id);
+    printf("Q%d not found!\n", id);
 }
 
 
-
-
-
-void saveqst(const char *filename, Question questions[], int count) {
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        printf("Error opening file for writing!\n");
+void saveqst(const char *fname, QList *head) {
+    FILE *fp = fopen(fname, "w");
+    if (fp == NULL) {
+        printf("Error writing file\n");
         return;
     }
 
-    for (int i = 0; i < count; i++) {
-        fprintf(file, "%d %s %s %s %s\n",
-                questions[i].questionNumber,
-                questions[i].domain,
-                questions[i].difficultyLevel,
-                questions[i].content,
-                questions[i].correctAnswer);
+    QList *curr = head;
+    while (curr != NULL) {
+        fprintf(fp, "%d %s %s %s %s\n",
+                curr->val.qNum,
+                curr->val.domain,
+                curr->val.diff,
+                curr->val.text,
+                curr->val.ans);
+        curr = curr->next;
     }
 
-    fclose(file);
-    printf("Question saved, cbn \n");
+    fclose(fp);
+    printf("Saved successfully\n");
 }
 
 
-
-
+void free_qlist(QList *head) {
+    QList *curr = head;
+    while (curr != NULL) {
+        QList *tmp = curr;
+        curr = curr->next;
+        free(tmp);
+    }
+}

@@ -16,8 +16,9 @@
 #define BOLD    "\e[1m"     // Set text to bold
 
  
-#define MAX_QUESTIONS 100
-#define MAX_LENGTH 200
+#define mq 200      // Max question text length
+#define ml 100      // Max questions limit
+
 // Define the Player structure
 typedef struct {
     int playerId;                // Unique identifier for the player
@@ -27,23 +28,33 @@ typedef struct {
     int totalScore;              // Total score across all games
 } Player;
 typedef struct {
-    int questionNumber;          //   id for the question
-    char domain[50];             // Domain of the question
-    char difficultyLevel[10];    // Difficulty level: "facile", "moyen", "difficile"
-    char content[MAX_LENGTH];    // The actual question text
-    char correctAnswer[100];     // The correct answer 
-} Question; 
-typedef struct qst_node{
-    Question value;
-    struct qst_list *next;
-} qst_list;
-// this is qst struct
+    int qNum;               // Question ID
+    char domain[50];        // Question domain
+    char diff[10];          // Difficulty: "easy", "medium", "hard"
+    char text[mq];     // Question text
+    char ans[100];          // Correct answer
+} Question; // this is qst struct
+typedef struct q_node {
+    Question val;
+    struct q_node *next;
+} QList;
 
-void readUINT(unsigned int *i); // Function prototype for reading an unsigned integer
-int loadqst(const char *filename, Question questions[], int *numQuestions); // Function prototype for loading questions from a file
-void displayqst(Question questions[], int numQuestions); // Function  for displaying questions
-void modifyqst(Question questions[], int count, int id, const char *newText); // Function  for modifying a question
-void saveqst(const char *filename, Question questions[], int count); // Function  for saving questions to a file
-// void deleteqst(Question questions[], int *count, int id); // // Function  for deleting questions to a file
+int loadqst(const char *fname, QList **head);//oad questions from file into linked list
+void showqst(QList *head); //Display all questions in the linked list 
+void editqst(QList *head, int id, const char *newTxt); //modify question text by question ID
+void saveqst(const char *fname, QList *head);//Save all questions to file 
+void free_qlist(QList *head);//  Free memory allocated for question list 
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif
