@@ -43,7 +43,7 @@ int adminMenu() {
             break;
              
             case 3 :    
-            //showPlayers(players);
+            viewplayers(p_head);
                 break;
 
            case 4:

@@ -141,3 +141,19 @@ void free_qlist(QList* head) {
         free(temp);
     }
 }
+void viewplayers(PList* head) {
+    printf("\n%sAll Players:%s\n", BLUE, RESET);
+    printf("%s%-5s %-20s %-15s %-5s %s\n", 
+           GREEN, "ID", "Nickname", "Domains", "Games", "Score", RESET);
+    
+    PList* current = head;
+    while (current != NULL) {
+        printf("%-5d %-20s %-15s %-5d %d\n",
+               current->val.playerId,
+               current->val.nichname,
+               current->val.Domainspref,
+               current->val.gamesPlayed,
+               current->val.totalScore);
+        current = current->next;
+    }
+}
