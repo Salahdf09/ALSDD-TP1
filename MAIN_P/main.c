@@ -41,7 +41,7 @@ int adminMenu() {
             break;
              
             case 3 :    
-            showPlayers(players);
+            //showPlayers(players);
                 break;
 
            case 4:
