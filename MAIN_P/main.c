@@ -62,7 +62,7 @@ int adminMenu() {
 }
 }
 
-    int playerMenu(const char* username) {
+    int playerMenu() {
         PList* players = NULL;
         QList* questions = NULL;
         char p_file[] = "players.txt";
@@ -75,7 +75,7 @@ int adminMenu() {
     
         while (1) {
             printf("%s\nPlayer Menu:\n", BLUE);
-            printf("%s1. Play\n%s", GREEN, RESET);
+            printf("%s1. start the game\n%s", GREEN, RESET);
             printf("%s2. View Scores\n%s", GREEN, RESET);
             printf("%s3. Exit\n%s", GREEN, RESET);
             printf("%sEnter your choice: %s", RED, RESET);
@@ -87,7 +87,7 @@ int adminMenu() {
                 case 2:
                     
                 case 3:
-                   
+                
                     return 0;
                 default:
                     printf("Invalid choice!\n");
