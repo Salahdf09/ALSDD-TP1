@@ -2,15 +2,10 @@
 #include "../lib/bib.h"
 #include <stdio.h>
 #include <string.h>
-#define MAX_QUESTIONS 100
-#define MAX_LENGTH 200
-
-// Define the Question structure
-
 
 int adminMenu() {
     QList *head = NULL;
-    char filename[] = "questions.text";
+    char filename[] = "questions.txt";
     int choice, id;
     char newText[mq];
 
@@ -18,12 +13,12 @@ int adminMenu() {
         return 1;
     }  
     while (1) {
-        printf(  "\nAdmin Menu:\n", BLUE , RESET );
-        printf("1. Delete a Question\n",GREEN,RESET);
-        printf("2. Modify a Question\n",GREEN,RESET);
-        printf("3. Delete a Player\n",GREEN,RESET);
-        printf("4. Exit\n",GREEN,RESET);
-        printf("Enter your choice: ",RED,RESET);
+        printf(  "%s\nAdmin Menu:\n", BLUE , RESET );
+        printf("%s1. Delete a Question\n%s",GREEN,RESET);
+        printf("%s2. Modify a Question\n%s",GREEN,RESET);
+        printf("%s3. Delete a Player\n%s",GREEN,RESET);
+        printf("%s4. Exit\n%s",GREEN,RESET);
+        printf("%sEnter your choice: %s",RED,RESET);
         scanf("%d", &choice);
 
         switch (choice) {
@@ -45,7 +40,7 @@ int adminMenu() {
             break;
             
         case 3:
-            printf("Player deletion not available\n");
+            printf("MZL\n");
             break;
             
         case 4:

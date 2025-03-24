@@ -29,7 +29,7 @@ void readUINT(unsigned int *i){
 int loadqst(const char *fname, QList **head) {
     FILE *fp = fopen(fname, "r");
     if (fp == NULL) {
-        printf("Error opening file\n");
+        printf("Error \n");
         return 0; 
     }
 
@@ -50,7 +50,7 @@ int loadqst(const char *fname, QList **head) {
                    newNode->val.diff,
                    newNode->val.text,
                    newNode->val.ans) != 5) {
-            printf("Error in line: %s", line);
+            printf("Error  line: %s", line);
             free(newNode);
             continue;
         }
@@ -105,7 +105,7 @@ void editqst(QList *head, int id, const char *newTxt) {
 void saveqst(const char *fname, QList *head) {
     FILE *fp = fopen(fname, "w");
     if (fp == NULL) {
-        printf("Error writing file\n");
+        printf("Error \n");
         return;
     }
 
@@ -121,7 +121,7 @@ void saveqst(const char *fname, QList *head) {
     }
 
     fclose(fp);
-    printf("Saved successfully\n");
+    printf("Saved  MARKA \n");
 }
 
 

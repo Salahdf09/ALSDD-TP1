@@ -38,12 +38,12 @@ typedef struct q_node {
     Question val;
     struct q_node *next;
 } QList;
-
-int loadqst(const char *fname, QList **head);//oad questions from file into linked list
+void readUINT(unsigned int *i); // Read an unsigned integer from the user
+int loadqst(const char *fname, QList **head);//Load questions from file into linked list
 void showqst(QList *head); //Display all questions in the linked list 
 void editqst(QList *head, int id, const char *newTxt); //modify question text by question ID
 void saveqst(const char *fname, QList *head);//Save all questions to file 
-void free_qlist(QList *head);//  Free memory allocated for question list 
+void free_qlist(QList *head);// Free memory allocated for question list 
 
 
 
