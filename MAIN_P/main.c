@@ -5,7 +5,9 @@
 
 int adminMenu() {
     QList *head = NULL;
+    PList *p_head = NULL;
     char filename[] = "questions.txt";
+    char p_file[] = "players.txt";
     int choice, id;
     char newText[mq];
 
@@ -45,7 +47,7 @@ int adminMenu() {
                 break;
 
            case 4:
-            printf("MZL\n");
+            // printf("MZL\n");
             break;
             
         case 5:
@@ -59,16 +61,43 @@ int adminMenu() {
     showqst(head);
 }
 }
-// Player menu function (to be implemented)
-void playerMenu() {
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////:::
-    ////////////////////////////////////////////
-// Main function}
+
+    int playerMenu(const char* username) {
+        PList* players = NULL;
+        QList* questions = NULL;
+        char p_file[] = "players.txt";
+        char q_file[] = "questions.txt";
+        int choice;
+        if (!loadPlayers(p_file, &players) || !loadqst(q_file, &questions)) {
+            printf("Error loading data\n");
+            return 1;
+        }
+    
+        while (1) {
+            printf("%s\nPlayer Menu:\n", BLUE);
+            printf("%s1. Play\n%s", GREEN, RESET);
+            printf("%s2. View Scores\n%s", GREEN, RESET);
+            printf("%s3. Exit\n%s", GREEN, RESET);
+            printf("%sEnter your choice: %s", RED, RESET);
+            scanf("%d", &choice);
+    
+            switch (choice) {
+                case 1:
+                    
+                case 2:
+                    
+                case 3:
+                   
+                    return 0;
+                default:
+                    printf("Invalid choice!\n");
+            }
+        }
 }
 int main() {
     int choice;
     do {
-        // printf("\033[2J"); 
+        printf("\033[2J"); 
         printf("%s%s=========== Welcome back ===========%s\n", BOLD, CYAN, RESET);
         printf("%s%sAre you: \n\t%s1. PLAYER \n\t2. Admin\n\t0. Exit...\n", BOLD, YELLOW, BLUE);
         printf("%sEnter your choice: %s", GREEN, RESET);

@@ -38,6 +38,10 @@ typedef struct q_node {
     Question val;
     struct q_node *next;
 } QList;
+typedef struct p_node {
+    Player val;
+    struct p_node *next;
+} PList;
 void readUINT(unsigned int *i); //Read an unsigned integer from the user
 int loadqst(const char *fname, QList **head);//Load questions from file into linked list
 void showqst(QList *head); //Display all questions in the linked list 
