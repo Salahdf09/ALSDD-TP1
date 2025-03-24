@@ -9,17 +9,14 @@
 
 
 int adminMenu() {
-    Question questions[MAX_QUESTIONS];
-    int numQuestions = 0;
-    char filename[] = "questions.txt";
+    QList *head = NULL;
+    char filename[] = "questions.text";
     int choice, id;
-    char newText[MAX_LENGTH];
+    char newText[mq];
 
-    // Load questions from file
-    if (!loadqst(filename, questions, &numQuestions)) {
-        return 1; 
-    }
-
+    if (!loadqst(filename, &head)) {
+        return 1;
+    }  
     while (1) {
         printf(  "\nAdmin Menu:\n", BLUE , RESET );
         printf("1. Delete a Question\n",GREEN,RESET);
@@ -31,36 +28,37 @@ int adminMenu() {
 
         switch (choice) {
             case 1:
-                printf("Enter the question ID to delete: ");
-                scanf("%d", &id);
-                // deleteqst(questions, &numQuestions, id);
-                saveqst(filename, questions, numQuestions);
-                break;
-            case 2:
-                printf("Enter the question ID to modify: ");
-                scanf("%d", &id);
-                printf("Enter the new question text: ");
-                getchar(); 
-                fgets(newText, MAX_LENGTH, stdin);
-                newText[strcspn(newText, "\n")] = '\0'; 
-                // modifyqst(questions, numQuestions, id, newText);
-                // modifyqst(filename, questions, numQuestions);
-                break;
-            case 3:
-                printf("ASBER MMZL LFONCTION");
-                break;
-            case 4:
-                printf("Exiting...\n",RED,RESET);
-                return 0;
-            default:
-                printf("Invalid choice! Please try again.\n");
-        }
-
-        // Display questions after each operation
-        displayqst(questions, numQuestions);
+            printf("Question ID to delete: ");
+            scanf("%d", &id);
+            saveqst(filename, head);
+            break;
+            
+        case 2:
+            printf("Question ID to modify: ");
+            scanf("%d", &id);
+            printf("New question text: ");
+            getchar(); 
+            fgets(newText, mq, stdin);
+            newText[strcspn(newText, "\n")] = '\0';
+            editqst(head, id, newText);
+            saveqst(filename, head);
+            break;
+            
+        case 3:
+            printf("Player deletion not available\n");
+            break;
+            
+        case 4:
+            free_qlist(head);
+            return 0;
+            
+        default:
+            printf("Invalid choice!\n");
     }
-}
 
+    showqst(head);
+}
+}
 // Player menu function (to be implemented)
 void playerMenu() {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////:::
