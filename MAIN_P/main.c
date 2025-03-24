@@ -16,8 +16,9 @@ int adminMenu() {
         printf(  "%s\nAdmin Menu:\n", BLUE , RESET );
         printf("%s1. Delete a Question\n%s",GREEN,RESET);
         printf("%s2. Modify a Question\n%s",GREEN,RESET);
-        printf("%s3. Delete a Player\n%s",GREEN,RESET);
-        printf("%s4. Exit\n%s",GREEN,RESET);
+        printf("%s3. View Players\n%s",GREEN,RESET);
+        printf("%s4. Delete a Player\n%s",GREEN,RESET);
+        printf("%s5. Exit\n%s",GREEN,RESET);
         printf("%sEnter your choice: %s",RED,RESET);
         scanf("%d", &choice);
 
@@ -38,12 +39,16 @@ int adminMenu() {
             editqst(head, id, newText);
             saveqst(filename, head);
             break;
-            
-        case 3:
+             
+            case 3 :    
+            showPlayers(players);
+                break;
+
+           case 4:
             printf("MZL\n");
             break;
             
-        case 4:
+        case 5:
             free_qlist(head);
             return 0;
             
