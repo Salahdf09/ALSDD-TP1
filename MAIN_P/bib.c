@@ -120,11 +120,3 @@ void saveqst(const char *filename, Question questions[], int count) {
 
 
 
-// Define the Player structure
-typedef struct {
-    int playerId;                // Unique identifier for the player
-    char nichname[50];           // Player's nickname
-    char Domainspref[100];       // Preferred domains for playing
-    int gamesPlayed;             // Number of games played
-    int totalScore;              // Total score across all games
-} Player;

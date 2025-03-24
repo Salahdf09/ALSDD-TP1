@@ -18,6 +18,14 @@
  
 #define MAX_QUESTIONS 100
 #define MAX_LENGTH 200
+// Define the Player structure
+typedef struct {
+    int playerId;                // Unique identifier for the player
+    char nichname[50];           // Player's nickname
+    char Domainspref[100];       // Preferred domains for playing
+    int gamesPlayed;             // Number of games played
+    int totalScore;              // Total score across all games
+} Player;
 typedef struct {
     int questionNumber;          //   id for the question
     char domain[50];             // Domain of the question
