@@ -124,12 +124,20 @@ void saveqst(const char *fname, QList *head) {
     printf("Saved  MARKA \n");
 }
 
+void free_plist(PList* head) {
+    PList* current = head;
+    while (current) {
+        PList* temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
 
-void free_qlist(QList *head) {
-    QList *curr = head;
-    while (curr != NULL) {
-        QList *tmp = curr;
-        curr = curr->next;
-        free(tmp);
+void free_qlist(QList* head) {
+    QList* current = head;
+    while (current) {
+        QList* temp = current;
+        current = current->next;
+        free(temp);
     }
 }
