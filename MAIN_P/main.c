@@ -65,7 +65,7 @@ int main() {
     do {
         // printf("\033[2J"); 
         printf("%s%s=========== Welcome back ===========%s\n", BOLD, CYAN, RESET);
-        printf("%s%sAre you: \n\t%s1) PLAYER \n\t2) Admin\n\t0) Exit...\n", BOLD, YELLOW, BLUE);
+        printf("%s%sAre you: \n\t%s1. PLAYER \n\t2. Admin\n\t0. Exit...\n", BOLD, YELLOW, BLUE);
         printf("%sEnter your choice: %s", GREEN, RESET);
         readUINT(&choice);
         printf("%d",choice);
