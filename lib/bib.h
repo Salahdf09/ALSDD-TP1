@@ -59,5 +59,5 @@ void board(PList* players);//Display the leaderboard
 int deletepl(PList** head, int playerId, const char* filename);//Delete a player from the linked list
 int savepl(const char* filename, PList* head);//Save all players to file
 void listDomains(QList* questions);//List all available domains
-findpl(players, name);//Find a player by nickname
+Player* findpl(players, name);//Find a player by nickname
 #endif
