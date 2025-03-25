@@ -23,6 +23,52 @@ void readUINT(unsigned int *i){
         printf("%sEnter a valid number: %s",RED,RESET);
     }
 } 
+int loadqst(const char *fname, QList **head) {
+    FILE *fp = fopen(fname, "r");
+    if (fp == NULL) {
+        printf("Error opening questions file\n");
+        return 0;
+    }
+
+    char line[512];  // Increased buffer size for long questions
+    QList *tail = NULL;
+    
+    while (fgets(line, sizeof(line), fp)) {
+        // Remove newline character if present
+        line[strcspn(line, "\n")] = '\0';
+        
+        QList *newNode = (QList*)malloc(sizeof(QList));
+        if (newNode == NULL) {
+            printf("Memory error\n");
+            break;
+        }
+        
+        // Parse the exact format: "69" "Informatique" "Difficile" "question" "answer"
+        if (sscanf(line, "\"%d\" \"%49[^\"]\" \"%49[^\"]\" \"%199[^\"]\" \"%99[^\"]\"",
+                  &newNode->val.qNum,
+                  newNode->val.domain,
+                  newNode->val.diff,
+                  newNode->val.text,
+                  newNode->val.ans) != 5) {
+            printf("Error parsing line: %s\n", line);
+            free(newNode);
+            continue;
+        }
+        
+        newNode->next = NULL;
+        
+        if (*head == NULL) {
+            *head = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    fclose(fp);
+    return 1;
+}
 void showqst(QList *head) {
     printf("Questions:\n");
     QList *curr = head;
@@ -36,7 +82,6 @@ void showqst(QList *head) {
         curr = curr->next;
     }
 }
-
 void editqst(QList *head, int id, const char *newTxt) {
     QList *curr = head;
     while (curr != NULL) {
@@ -131,22 +176,35 @@ int loadPl(const char *p, PList **head) {
     fclose(fp);
     return 1;
 }
-char newpl() {
+Player* newpl() {
+
     Player *s = (Player*)malloc(sizeof(Player));
     if (!s) {
-        printf("failed!\n");
-        return NULL;
+        printf("failed\n");
+        return NULL; 
     }
+
     printf("Enter nickname: ");
     fgets(s->nichname, sizeof(s->nichname), stdin);
-    s->nichname[strcspn(s->nichname, "\n")] = '\0';
-    s->playerId = generateNewID();  // You'll need to implement this
+    s->nichname[strcspn(s->nichname, "\n")] = '\0';  // Remove newline
+
+    s->playerId = generateNewID();  // Assume this is implemented elsewhere
     s->gamesPlayed = 0;
     s->totalScore = 0;
 
-    printf("account created \n");
+    printf("Account created successfully!\n");
     printf("Your new ID: %d\n", s->playerId);
-    return s;
+    return s;  // Return the pointer to the new Player
+}
+findpl(players, name) {
+    PList* current = players;
+    while (current != NULL) {
+        if (strcmp(current->val.nichname, name) == 0) {
+            return &current->val;
+        }
+        current = current->next;
+    }
+    return NULL;
 }
 int generateNewID() {
     static int id = 1000; // Starting ID
@@ -280,52 +338,6 @@ void upStats(Player* player, int score, int games){
     player->gamesPlayed += games;
     float averageScore = (player->gamesPlayed > 0) ? (float)player->totalScore / player->gamesPlayed : 0.0f;
    
-}
-int loadqst(const char *fname, QList **head) {
-    FILE *fp = fopen(fname, "r");
-    if (fp == NULL) {
-        printf("Error opening questions file\n");
-        return 0;
-    }
-
-    char line[512];  // Increased buffer size for long questions
-    QList *tail = NULL;
-    
-    while (fgets(line, sizeof(line), fp)) {
-        // Remove newline character if present
-        line[strcspn(line, "\n")] = '\0';
-        
-        QList *newNode = (QList*)malloc(sizeof(QList));
-        if (newNode == NULL) {
-            printf("Memory error\n");
-            break;
-        }
-        
-        // Parse the exact format: "69" "Informatique" "Difficile" "question" "answer"
-        if (sscanf(line, "\"%d\" \"%49[^\"]\" \"%49[^\"]\" \"%199[^\"]\" \"%99[^\"]\"",
-                  &newNode->val.qNum,
-                  newNode->val.domain,
-                  newNode->val.diff,
-                  newNode->val.text,
-                  newNode->val.ans) != 5) {
-            printf("Error parsing line: %s\n", line);
-            free(newNode);
-            continue;
-        }
-        
-        newNode->next = NULL;
-        
-        if (*head == NULL) {
-            *head = newNode;
-            tail = newNode;
-        } else {
-            tail->next = newNode;
-            tail = newNode;
-        }
-    }
-
-    fclose(fp);
-    return 1;
 }
 void saveqst(const char *fname, QList *head) {
     FILE *fp = fopen(fname, "w");

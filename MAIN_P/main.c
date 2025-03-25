@@ -88,7 +88,7 @@ int playerMenu() {
         char name[20];
         printf("%sEnter your nickname: %s", GREEN, RESET);
         scanf("%s", name);
-        currentPlayer = findPlayer(players, name);   
+        currentPlayer = findpl(players, name);   
         if (!currentPlayer) {
             printf("%sno acount %s\n", RED, RESET);
             free_plist(players);    
