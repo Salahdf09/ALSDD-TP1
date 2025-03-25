@@ -47,7 +47,10 @@ int adminMenu() {
                 break;
 
            case 4:
-            // printf("MZL\n");
+            printf("Player ID to delete: ");
+            scanf("%d", &id);   
+            delete(p_head, id, p_file);
+            save(p_file, p_head);
             break;
             
         case 5:
@@ -121,7 +124,7 @@ int playerMenu() {
             case 3: board(players);
                     break;
             case 4: freeAllData(players, questions);
-                    printf("%sGoodbye, %s!%s\n", BLUE, currentPlayer->nichname, RESET);
+                    printf("%sGoodbye%s\n", BLUE, currentPlayer->nichname, RESET);
                     return 0;
             default: printf("%sInvalid choice!%s\n", RED, RESET);
         }
