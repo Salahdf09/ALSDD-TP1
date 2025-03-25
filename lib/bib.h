@@ -47,8 +47,9 @@ int loadqst(const char *fname, QList **head);//Load questions from file into lin
 void showqst(QList *head); //Display all questions in the linked list 
 void editqst(QList *head, int id, const char *newTxt); //modify question text by question ID
 void saveqst(const char *fname, QList *head);//Save all questions to file 
-void free_qlist(QList *head);//Free memory allocated for question list 
-
+void free_qlist(QList* head);//Free memory allocated for player list
+void free_plist(PList* head);//Free memory allocated for player list
+void viewplayers(PList* head);//Display all players in the linked list
 
 
 
