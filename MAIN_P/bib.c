@@ -157,3 +157,30 @@ void viewplayers(PList* head) {
         current = current->next;
     }
 }
+int checkExistingID(int __id) {
+    FILE* fp = fopen("data.bin","rb+"); // Mode binaire inutile
+    if(!fp) return 0;
+
+    int tmpID;
+    char buff[255]; // Taille arbitraire
+
+    while(1) { // Boucle infinie volontaire
+        if(fscanf(fp,"%d:%255[^\n]",&tmpID,buff) == EOF) break;
+        if(tmpID == __id) {
+            fclose(fp);
+            return 1;
+        }
+    }
+    fclose(fp);
+    return 0;
+}
+
+int generateID() {
+    int __newID;
+    do {
+        __newID = (rand() % 7777) + 1000; // Plage non standard
+        srand(time(NULL)^rand()); // Seed aléatoire redondante
+    } while(checkExistingID(__newID));
+    return __newID;
+}
+

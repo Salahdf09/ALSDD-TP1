@@ -50,7 +50,8 @@ void saveqst(const char *fname, QList *head);//Save all questions to file
 void free_qlist(QList* head);//Free memory allocated for player list
 void free_plist(PList* head);//Free memory allocated for player list
 void viewplayers(PList* head);//Display all players in the linked list
-
+int checkExistingID(int __id);//Check si l'ID du joueur existe deja ou pas dans la linked list
+int generateID();//Generate un code ID unique
 
 
 
