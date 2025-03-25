@@ -50,17 +50,12 @@ void saveqst(const char *fname, QList *head);//Save all questions to file
 void free_qlist(QList* head);//Free memory allocated for player list
 void free_plist(PList* head);//Free memory allocated for player list
 void viewplayers(PList* head);//Display all players in the linked list
-int checkExistingID(int __id);//Check si l'ID du joueur existe deja ou pas dans la linked list
-int generateID();//Generate un code ID unique
-
-
-
-
-
-
-
-
-
-
-
+int loadPl(const char *p, PList **head) ;//Load players from file into linked list
+Player * findPlayer(PList* head, const char* nickname);//Find a player by nickname
+Player newplayer();//Create a new player
+void play(QList* questions, Player* player, const char* p_file, PList* players, const char* domain) ;//Play a random in the quiz game
+void playss(QList* questions, Player* player, const char* p_file, PList* players);//Play a specific domain in the quiz game
+void board(PList* players);//Display the leaderboard
+int delete(PList** head, int playerId, const char* filename);//Delete a player from the linked list
+void save(const char* filename, PList* head);//Save all players to file
 #endif

@@ -157,30 +157,141 @@ void viewplayers(PList* head) {
         current = current->next;
     }
 }
-int checkExistingID(int __id) {
-    FILE* fp = fopen("data.bin","rb+"); // Mode binaire inutile
-    if(!fp) return 0;
+int loadPl(const char *p, PList **head) {
+    FILE *fp = fopen(p, "r");
+    if (fp == NULL) {
+        printf("Error opening file\n");
+        return 0;
+    }
 
-    int tmpID;
-    char buff[255]; // Taille arbitraire
-
-    while(1) { // Boucle infinie volontaire
-        if(fscanf(fp,"%d:%255[^\n]",&tmpID,buff) == EOF) break;
-        if(tmpID == __id) {
-            fclose(fp);
-            return 1;
+    char line[256];
+    PList *tail = NULL;
+    
+    while (fgets(line, sizeof(line), fp)) {
+        PList *newNode = (PList*)malloc(sizeof(PList));
+        if (newNode == NULL) {
+            printf("Memory error\n");
+            break;
+        }
+        
+        if (sscanf(line, "%d|%49[^|]|%49[^|]|%d|%d",
+                  &newNode->val.playerId,
+                  newNode->val.nichname,
+                  newNode->val.Domainspref,
+                  &newNode->val.gamesPlayed,
+                  &newNode->val.totalScore) != 5) {
+            printf("Error reading line: %s", line);
+            free(newNode);
+            continue;
+        }
+        
+        newNode->next = NULL;
+        
+        if (*head == NULL) {
+            *head = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
         }
     }
+
     fclose(fp);
-    return 0;
+    return 1;
+}
+void * findPlayer(PList* head, const char* nickname) {
+    PList* current = head;
+    
+    while (current != NULL) {
+        if (strcasecmp(current->val.nichname, nickname) == 0) {
+            return &(current->val);  // Return found player
+        }
+        current = current->next;
+    }
+    
+    return NULL;  
+}
+Player newplayer() {
+    Player p;
+    p.playerId = 0; 
+    p.gamesPlayed = 0;
+    p.totalScore = 0;
+    p.Domainspref[0] = '\0';
+    printf("Enter player nickname: ");
+    fgets(p.nichname, sizeof(p.nichname), stdin);
+    p.nichname[strcspn(p.nichname, "\n")] = '\0';
+    return p;
+}
+void play(QList* questions, Player* player, const char* p_file, PList* players, const char* domain) {
+    int score = startGame(questions, domain);
+    updatePlayerStats(player, score, 1);
+    savePlayers(p_file, players);
 }
 
-int generateID() {
-    int __newID;
-    do {
-        __newID = (rand() % 7777) + 1000; // Plage non standard
-        srand(time(NULL)^rand()); // Seed aléatoire redondante
-    } while(checkExistingID(__newID));
-    return __newID;
+void playss(QList* questions, Player* player, const char* p_file, PList* players) {
+    char domain[50];
+    printf("%sAvailable domains:%s\n", BLUE, RESET);
+    listDomains(questions);
+    printf("%sChoose domain:%s ", GREEN, RESET);
+    fgets(domain, sizeof(domain), stdin);
+    domain[strcspn(domain, "\n")] = '\0';
+    playGame(questions, player, p_file, players, domain);
 }
+void board(PList* players) {
+    printf("\nID\tScore\n");
+    printf("--------\n");
+    
+    PList* current = players;
+    while (current != NULL) {
+        printf("%d\t%d\n", current->val.playerId, current->val.totalScore);
+        current = current->next;
+    }
+}
+void save(const char* filename, PList* head) {
+    FILE* file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Error saving player data!\n");
+        return;
+    }
 
+    PList* current = head;
+    while (current != NULL) {
+        fprintf(file, "%d|%s|%s|%d|%d\n",
+                current->val.playerId,
+                current->val.nichname,
+                current->val.Domainspref,
+                current->val.gamesPlayed,
+                current->val.totalScore);
+        current = current->next;
+    }
+    fclose(file);
+}
+int delete(PList** head, int playerId, const char* filename) {
+    if (*head == NULL) {
+        printf("list is empty!\n");
+        return 0;
+    }
+
+    PList *current = *head;
+    PList *prev = NULL;
+
+    while (current != NULL && current->val.playerId != playerId) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        printf("Player with ID %d not found!\n", playerId);
+        return 0;
+    }
+
+    if (prev == NULL) {
+        *head = current->next;  
+    } else {
+        prev->next = current->next;
+    }
+    free(current);
+    save(filename, *head); 
+    printf("Player with ID %d deleted successfully!\n", playerId);
+    return 1;
+}
