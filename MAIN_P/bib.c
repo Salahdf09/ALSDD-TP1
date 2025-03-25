@@ -23,55 +23,6 @@ void readUINT(unsigned int *i){
         printf("%sEnter a valid number: %s",RED,RESET);
     }
 } 
-
-
-
-int loadqst(const char *fname, QList **head) {
-    FILE *fp = fopen(fname, "r");
-    if (fp == NULL) {
-        printf("Error \n");
-        return 0; 
-    }
-
-    char line[mq * 2];
-    QList *tail = NULL;
-    int cnt = 0;
-    
-    while (fgets(line, sizeof(line), fp) && cnt < ml ) {
-        QList *newNode = (QList*)malloc(sizeof(QList));
-        if (newNode == NULL) {
-            printf("Memory error\n");
-            break;
-        }
-        
-        if (sscanf(line, "%d %49s %9s %199[^\n] %99[^\n]",
-                   &newNode->val.qNum,
-                   newNode->val.domain,
-                   newNode->val.diff,
-                   newNode->val.text,
-                   newNode->val.ans) != 5) {
-            printf("Error  line: %s", line);
-            free(newNode);
-            continue;
-        }
-        
-        newNode->next = NULL;
-        
-        if (*head == NULL) {
-            *head = newNode;
-            tail = newNode;
-        } else {
-            tail->next = newNode;
-            tail = newNode;
-        }
-        cnt++;
-    }
-
-    fclose(fp);
-    return 1;
-}
-  
-
 void showqst(QList *head) {
     printf("Questions:\n");
     QList *curr = head;
@@ -86,7 +37,6 @@ void showqst(QList *head) {
     }
 }
 
-
 void editqst(QList *head, int id, const char *newTxt) {
     QList *curr = head;
     while (curr != NULL) {
@@ -100,30 +50,6 @@ void editqst(QList *head, int id, const char *newTxt) {
     }
     printf("Q%d not found!\n", id);
 }
-
-
-void saveqst(const char *fname, QList *head) {
-    FILE *fp = fopen(fname, "w");
-    if (fp == NULL) {
-        printf("Error \n");
-        return;
-    }
-
-    QList *curr = head;
-    while (curr != NULL) {
-        fprintf(fp, "%d %s %s %s %s\n",
-                curr->val.qNum,
-                curr->val.domain,
-                curr->val.diff,
-                curr->val.text,
-                curr->val.ans);
-        curr = curr->next;
-    }
-
-    fclose(fp);
-    printf("Saved  MARKA \n");
-}
-
 void free_plist(PList* head) {
     PList* current = head;
     while (current) {
@@ -132,7 +58,13 @@ void free_plist(PList* head) {
         free(temp);
     }
 }
-
+void handleInputError() {
+    // Clear the input buffer
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+    
+    printf("%sInvalid input! Please enter a number.%s\n", RED, RESET);
+}
 void free_qlist(QList* head) {
     QList* current = head;
     while (current) {
@@ -199,43 +131,93 @@ int loadPl(const char *p, PList **head) {
     fclose(fp);
     return 1;
 }
-void * findPlayer(PList* head, const char* nickname) {
-    PList* current = head;
+char newpl() {
+    Player *s = (Player*)malloc(sizeof(Player));
+    if (!s) {
+        printf("failed!\n");
+        return NULL;
+    }
+    printf("Enter nickname: ");
+    fgets(s->nichname, sizeof(s->nichname), stdin);
+    s->nichname[strcspn(s->nichname, "\n")] = '\0';
+    s->playerId = generateNewID();  // You'll need to implement this
+    s->gamesPlayed = 0;
+    s->totalScore = 0;
+
+    printf("account created \n");
+    printf("Your new ID: %d\n", s->playerId);
+    return s;
+}
+int generateNewID() {
+    static int id = 1000; // Starting ID
+    return id++;
+}
+void listDomains(QList* questions) {
+    char domains[100][50] = {0};
+    int count = 0;
     
-    while (current != NULL) {
-        if (strcasecmp(current->val.nichname, nickname) == 0) {
-            return &(current->val);  // Return found player
+    QList* current = questions;
+    while (current) {
+        int found = 0;
+        for (int i = 0; i < count; i++) {
+            if (strcmp(domains[i], current->val.domain) == 0) {
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            strcpy(domains[count++], current->val.domain);
+            printf("- %s\n", current->val.domain);
         }
         current = current->next;
     }
-    
-    return NULL;  
 }
-Player newplayer() {
-    Player p;
-    p.playerId = 0; 
-    p.gamesPlayed = 0;
-    p.totalScore = 0;
-    p.Domainspref[0] = '\0';
-    printf("Enter player nickname: ");
-    fgets(p.nichname, sizeof(p.nichname), stdin);
-    p.nichname[strcspn(p.nichname, "\n")] = '\0';
-    return p;
-}
-void play(QList* questions, Player* player, const char* p_file, PList* players, const char* domain) {
-    int score = startGame(questions, domain);
-    updatePlayerStats(player, score, 1);
-    savePlayers(p_file, players);
-}
+void play(QList* questions, Player* player, const char* domain) {
+    int score = 0;
+    int questionsAsked = 0;
+    int totalEligible = 0;
+    QList* current = questions;
 
-void playss(QList* questions, Player* player, const char* p_file, PList* players) {
-    char domain[50];
-    printf("%sAvailable domains:%s\n", BLUE, RESET);
-    listDomains(questions);
-    printf("%sChoose domain:%s ", GREEN, RESET);
-    fgets(domain, sizeof(domain), stdin);
-    domain[strcspn(domain, "\n")] = '\0';
-    playGame(questions, player, p_file, players, domain);
+    // Count eligible questions first
+    while (current != NULL) {
+        if (strcmp(domain, "random") == 0 || strcmp(current->val.domain, domain) == 0) {
+            totalEligible++;
+        }
+        current = current->next;
+    }
+
+    if (totalEligible == 0) {
+        printf("No questions available in this domain!\n");
+        return;
+    }
+
+    printf("\n=== QUIZ (%s) ===\n", (strcmp(domain, "random") == 0) ? "Random" : domain);
+    printf("Answer 5 questions from %s\n\n", 
+          (strcmp(domain, "random") == 0) ? "all domains" : domain);
+    current = questions;
+    while (current != NULL && questionsAsked < 5) {
+        if (strcmp(domain, "random") == 0 || strcmp(current->val.domain, domain) == 0) {
+            printf("\nQuestion %d/%d (ID: %d)\n", questionsAsked+1, 5, current->val.qNum);
+            printf("Domain: %s\n", current->val.domain);
+            printf("Difficulty: %s\n", current->val.diff);
+            printf("Question: %s\n", current->val.text);
+            char answer[100];
+            printf("Your answer: ");
+            fgets(answer, sizeof(answer), stdin);
+            answer[strcspn(answer, "\n")] = '\0';
+
+            if (strcasecmp(answer, current->val.ans) == 0) {
+                printf("god, +10 points\n");
+                score += 10;
+            } else {
+                printf("no . The correct answer was: %s\n", current->val.ans);
+            }
+            questionsAsked++;
+        }
+        current = current->next;
+    }
+    player->totalScore += score;
+    player->gamesPlayed++;
 }
 void board(PList* players) {
     printf("\nID\tScore\n");
@@ -247,16 +229,13 @@ void board(PList* players) {
         current = current->next;
     }
 }
-void save(const char* filename, PList* head) {
-    FILE* file = fopen(filename, "w");
-    if (file == NULL) {
-        printf("Error saving player data!\n");
-        return;
-    }
-
-    PList* current = head;
-    while (current != NULL) {
-        fprintf(file, "%d|%s|%s|%d|%d\n",
+int savepl(const char* filename, PList* players) {
+    FILE* fp = fopen(filename, "w");
+    if (!fp) return 0;
+    
+    PList* current = players;
+    while (current) {
+        fprintf(fp, "%d|%s|%s|%d|%d\n",
                 current->val.playerId,
                 current->val.nichname,
                 current->val.Domainspref,
@@ -264,9 +243,10 @@ void save(const char* filename, PList* head) {
                 current->val.totalScore);
         current = current->next;
     }
-    fclose(file);
+    fclose(fp);
+    return 1;
 }
-int delete(PList** head, int playerId, const char* filename) {
+int deletepl(PList** head, int playerId, const char* filename) {
     if (*head == NULL) {
         printf("list is empty!\n");
         return 0;
@@ -291,7 +271,80 @@ int delete(PList** head, int playerId, const char* filename) {
         prev->next = current->next;
     }
     free(current);
-    save(filename, *head); 
+    savepl(filename, *head); 
     printf("Player with ID %d deleted successfully!\n", playerId);
     return 1;
+}
+void upStats(Player* player, int score, int games){
+    player->totalScore += score;
+    player->gamesPlayed += games;
+    float averageScore = (player->gamesPlayed > 0) ? (float)player->totalScore / player->gamesPlayed : 0.0f;
+   
+}
+int loadqst(const char *fname, QList **head) {
+    FILE *fp = fopen(fname, "r");
+    if (fp == NULL) {
+        printf("Error opening questions file\n");
+        return 0;
+    }
+
+    char line[512];  // Increased buffer size for long questions
+    QList *tail = NULL;
+    
+    while (fgets(line, sizeof(line), fp)) {
+        // Remove newline character if present
+        line[strcspn(line, "\n")] = '\0';
+        
+        QList *newNode = (QList*)malloc(sizeof(QList));
+        if (newNode == NULL) {
+            printf("Memory error\n");
+            break;
+        }
+        
+        // Parse the exact format: "69" "Informatique" "Difficile" "question" "answer"
+        if (sscanf(line, "\"%d\" \"%49[^\"]\" \"%49[^\"]\" \"%199[^\"]\" \"%99[^\"]\"",
+                  &newNode->val.qNum,
+                  newNode->val.domain,
+                  newNode->val.diff,
+                  newNode->val.text,
+                  newNode->val.ans) != 5) {
+            printf("Error parsing line: %s\n", line);
+            free(newNode);
+            continue;
+        }
+        
+        newNode->next = NULL;
+        
+        if (*head == NULL) {
+            *head = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    fclose(fp);
+    return 1;
+}
+void saveqst(const char *fname, QList *head) {
+    FILE *fp = fopen(fname, "w");
+    if (fp == NULL) {
+        printf("Error saving questions\n");
+        return;
+    }
+
+    QList *curr = head;
+    while (curr != NULL) {
+        fprintf(fp, "\"%d\" \"%s\" \"%s\" \"%s\" \"%s\"\n",
+                curr->val.qNum,
+                curr->val.domain,
+                curr->val.diff,
+                curr->val.text,
+                curr->val.ans);
+        curr = curr->next;
+    }
+
+    fclose(fp);
+    printf("Questions saved successfully\n");
 }

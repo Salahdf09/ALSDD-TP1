@@ -46,16 +46,18 @@ void readUINT(unsigned int *i); //Read an unsigned integer from the user
 int loadqst(const char *fname, QList **head);//Load questions from file into linked list
 void showqst(QList *head); //Display all questions in the linked list 
 void editqst(QList *head, int id, const char *newTxt); //modify question text by question ID
-void saveqst(const char *fname, QList *head);//Save all questions to file 
-void free_qlist(QList* head);//Free memory allocated for player list
+void handleInputError(); //Clear the input buffer
+void free_qlist(QList* head); //Free memory allocated for question list
+void saveqst(const char *fname, QList *head);//Save all questions to file void free_qlist(QList* head);//Free memory allocated for player list
 void free_plist(PList* head);//Free memory allocated for player list
 void viewplayers(PList* head);//Display all players in the linked list
 int loadPl(const char *p, PList **head) ;//Load players from file into linked list
 Player * findPlayer(PList* head, const char* nickname);//Find a player by nickname
-Player newplayer();//Create a new player
-void play(QList* questions, Player* player, const char* p_file, PList* players, const char* domain) ;//Play a random in the quiz game
-void playss(QList* questions, Player* player, const char* p_file, PList* players);//Play a specific domain in the quiz game
+int generateNewID();//Generate a new unique player ID
+Player newpl();//Create a new player
+void play(QList* questions, Player* player, const char* domain);//Play a quiz game
 void board(PList* players);//Display the leaderboard
-int delete(PList** head, int playerId, const char* filename);//Delete a player from the linked list
-void save(const char* filename, PList* head);//Save all players to file
+int deletepl(PList** head, int playerId, const char* filename);//Delete a player from the linked list
+void savepl(const char* filename, PList* head);//Save all players to file
+void listDomains(QList* questions);//List all available domains
 #endif

@@ -49,12 +49,13 @@ int adminMenu() {
            case 4:
             printf("Player ID to delete: ");
             scanf("%d", &id);   
-            delete(p_head, id, p_file);
-            save(p_file, p_head);
+            deletepl(&p_head, id, p_file);
+            savepl(p_file, p_head);
             break;
             
         case 5:
             free_qlist(head);
+            free_plist(p_head);
             return 0;
             
         default:
@@ -74,7 +75,7 @@ int playerMenu() {
     int choice;
     
     // Load data
-    if (!loadPlayers(p_file, &players) || !loadqst(q_file, &questions)) {
+    if (!loadPl(p_file, &players) || !loadqst(q_file, &questions)) {
         printf("%sError%s\n", RED, RESET);
         return 1;
     }
@@ -90,16 +91,18 @@ int playerMenu() {
         currentPlayer = findPlayer(players, name);   
         if (!currentPlayer) {
             printf("%sno acount %s\n", RED, RESET);
-            freeAllData(players, questions);
+            free_plist(players);    
+            free_qlist(questions);
             return 1;
         }
     } else {
-        currentPlayer = newPlayer();
+       * currentPlayer = newpl();
         if (!currentPlayer) {
-            freeAllData(players, questions);
-            return 1;
+            free_plist(players);
+            free_qlist(questions);
         }
-        savePlayers(p_file, players);
+        savepl(p_file, players);
+        
     }
     return 0;
     while (1) {
@@ -117,13 +120,14 @@ int playerMenu() {
         getchar();
 
         switch (choice) {
-            case 1: play(questions, currentPlayer, p_file, players, "random");
+            case 1: play(questions, currentPlayer, "random");
                     break;
-            case 2: playss(questions, currentPlayer, p_file, players);
+            case 2: play(questions, currentPlayer, currentPlayer->Domainspref);
                     break;
             case 3: board(players);
                     break;
-            case 4: freeAllData(players, questions);
+            case 4: free_plist(players);
+                    free_qlist(questions);
                     printf("%sGoodbye%s\n", BLUE, currentPlayer->nichname, RESET);
                     return 0;
             default: printf("%sInvalid choice!%s\n", RED, RESET);
