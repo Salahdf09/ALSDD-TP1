@@ -53,8 +53,8 @@ void free_plist(PList* head);//Free memory allocated for player list
 void viewplayers(PList* head);//Display all players in the linked list
 int loadPl(const char *p, PList **head) ;//Load players from file into linked list
 int generateNewID();//Generate a new unique player ID
-Player newpl();//Create a new player
-Player* findpl(players, name);//Find a player by nickname
+Player * newpl();//Create a new player
+Player * findpl(PList * players,char name[]);//Find a player by nickname
 void play(QList* questions, Player* player, const char* domain);//Play a quiz game
 void board(PList* players);//Display the leaderboard
 int deletepl(PList** head, int playerId, const char* filename);//Delete a player from the linked list

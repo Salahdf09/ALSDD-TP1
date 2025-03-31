@@ -196,8 +196,8 @@ Player* newpl() {
     printf("Your new ID: %d\n", s->playerId);
     return s;  // Return the pointer to the new Player
 }
-Player* findpl(players, name) {
-    PList* current = players;
+Player* findpl(PList * players,char name[]) {
+    PList * current = players;
     while (current != NULL) {
         if (strcmp(current->val.nichname, name) == 0) {
             return &current->val;

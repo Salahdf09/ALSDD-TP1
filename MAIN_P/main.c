@@ -96,11 +96,13 @@ int playerMenu() {
             return 1;
         }
     } else {
-       * currentPlayer = newpl();
-        if (!currentPlayer) {
+        currentPlayer = newpl();
+        // TODO : add new player to linked list 
+        // TODO : save the new players list to the file
+        /*if (!currentPlayer) {
             free_plist(players);
             free_qlist(questions);
-        }
+        }*/
         savepl(p_file, players);
         
     }
@@ -135,9 +137,16 @@ int playerMenu() {
     }
 } 
 int main() {
+    /*
+        PList* players = NULL;
+        QList* questions = NULL;
+        fopen
+        load players
+        load questions
+    */
     int choice;
     do {
-        printf("\033[2J"); 
+        //printf("\033[2J"); 
         printf("%s%s=========== Welcome back ===========%s\n", BOLD, CYAN, RESET);
         printf("%s%sAre you: \n\t%s1. PLAYER \n\t2. Admin\n\t0. Exit...\n", BOLD, YELLOW, BLUE);
         printf("%sEnter your choice: %s", GREEN, RESET);
@@ -152,6 +161,9 @@ int main() {
                 break;
             case 0:
                 printf("Exiting , tchaw \n");
+                /*
+                    save players and questions lists to files
+                */
                 break;
             default:
                 printf(" Please try again.\n");
