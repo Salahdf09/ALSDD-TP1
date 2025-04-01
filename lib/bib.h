@@ -3,6 +3,11 @@
 
  #include <stdlib.h>
  #include <string.h>
+
+//  Define constants for files names
+#define QUESTIONS_FILE "questions.txt"
+#define PLAYERS_FILE "players.txt"
+
  // Define color codes for terminal text formatting
 #define RESET   "\e[m"      // Reset text formatting to default
 #define RED     "\033[31m"  // Set text color to red
@@ -18,6 +23,7 @@
  
 #define mq 200      // Max question text length
 #define ml 100      // Max questions limit
+
 
 // Define the Player structure
 typedef struct {
