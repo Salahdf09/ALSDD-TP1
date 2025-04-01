@@ -115,7 +115,7 @@ void FreePlayer(PList **p); // free the memory allocated for a player
 void DeletePlayer(PList **head, int id); // delete a player by its ID
 void InsertPlayer(PList **head, PList *p); // insert a player to the players list
 void ShowPlayer(Player *p); // display a player
-bool FindPlayer(PList *head, int id, Player *p); // find a player by its ID
+bool FindPlayer(PList *head, int id, Player **p); // find a player by its ID
 Question* ChooseRandomQuestion(QList *head, int domain, int difficulty);
 int CalculateScore(int difficulty, int isPreferredDomain);
 bool AskQuestion(Question *q, Player *player);
@@ -128,14 +128,13 @@ void PlayerEditProfile(Player *player);
 void ShowLeaderboard(PList *Phead);
 int CalculateTotalScore(PartieList *partieHead, int playerId);
 void StartGame(QList *Qhead, Player *player, PartieList **partieHead, int level);
-int AskQuestions(QList *head, Player player, int count, int difficulty, PartieQlist **currentPartieQ);
 bool AskQuestion(Question *q, Player *player);
 void DisplayPartiesList(PartieList *partieHead);
 void AddPlayerMenu(PList **Phead, int *nbrPl);
 void PlayerEditProfile(Player *player);
 void ShowLeaderboard(PList *Phead);
 void StartGame(QList *Qhead, Player *player, PartieList **partieHead, int level);
-int AskQuestions(QList *head, Player player, int count, int difficulty, PartieQlist **currentPartieQ);
+int AskQuestions(QList *head, Player player, int count, int difficulty, PartieQlist ***currentPartieQ);
 void SaveQuestions(QList *head);
 void SavePlayers(PList *head);
 int LoadQuestions(QList **head);
@@ -144,4 +143,7 @@ void SaveParties(PartieList *head);
 int LoadParties(PartieList **head, QList *Qhead);
 void PartieToString(Partie *partie, char *str);
 void StringToPartie(Partie *partie, char *str, QList *Qhead);
+void showPartieQlist(PartieQlist *head);
+void showPartie(Partie *partie);
+void showPartieList(PartieList *head);
 #endif

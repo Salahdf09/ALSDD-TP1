@@ -259,9 +259,9 @@ void AdminMenu(QList **Qhead, PList **Phead, PartieList **partieHead, int *nbrQs
 			case 6:
 				printf("Player ID to view: ");
 				scanf("%d", &id);
-				Player p;
+				Player *p;
 				if (FindPlayer(*Phead, id, &p)) {
-					ShowPlayer(&p);
+					ShowPlayer(p);
 				} else {
 					printf("Player not found!\n");
 				}
@@ -394,11 +394,11 @@ void ShowPlayer(Player *p) {
     printf("\n");
 }
 
-bool FindPlayer(PList *head, int id, Player *p) {
+bool FindPlayer(PList *head, int id, Player **p) {
     PList *current = head;
     while (current != NULL) {
         if (current->val.playerId == id) {
-            *p = current->val;
+            *p = &current->val;
             return true;
         }
         current = current->next;
@@ -483,11 +483,11 @@ void StartGame(QList *Qhead, Player *player,PartieList **partieHead, int level) 
 	newPartie->val.playerId = player->playerId;
 	newPartie->val.level = level;
 	newPartie->val.questions = NULL;
-	PartieQlist **currentPartieQ = &newPartie->val.questions;
+	PartieQlist **currentPartieQ = &(newPartie->val.questions);
     // Determine the number of questions for each difficulty based on the level
     switch (level) {
         case 1:
-            easyQuestions = 6;
+            easyQuestions = 1;//6
             mediumQuestions = 6;
             hardQuestions = 3;
             break;
@@ -512,9 +512,9 @@ void StartGame(QList *Qhead, Player *player,PartieList **partieHead, int level) 
 
     // Ask questions for each difficulty
 		printf("%sStarting the game at level %d ...%s\n", BLUE, level, RESET);
-		totalScore+= AskQuestions(Qhead, *player, easyQuestions, EASY ,currentPartieQ);
-		totalScore+= AskQuestions(Qhead, *player, mediumQuestions, MEDIUM ,currentPartieQ);
-		totalScore+= AskQuestions(Qhead, *player, hardQuestions, HARD ,currentPartieQ);
+		totalScore+= AskQuestions(Qhead, *player, easyQuestions, EASY ,&currentPartieQ);
+		totalScore+= AskQuestions(Qhead, *player, mediumQuestions, MEDIUM ,&currentPartieQ);
+		totalScore+= AskQuestions(Qhead, *player, hardQuestions, HARD ,&currentPartieQ);
 
 
     // Display the total score
@@ -526,16 +526,21 @@ void StartGame(QList *Qhead, Player *player,PartieList **partieHead, int level) 
 	newPartie->val.totalScore = totalScore;
 	printf("%sGame saved successfully!%s\n", GREEN, RESET);
 }
-int AskQuestions(QList *head, Player player , int count, int difficulty , PartieQlist **currentPartieQ) {
+int AskQuestions(QList *head, Player player , int count, int difficulty , PartieQlist ***currentPartieQ) {
 	if (count <= 0) {
 		printf("%sInvalid number of questions.%s\n", RED, RESET);
 		return 0;
 	}
 	int totalScore = 0;
-	int preferredDomainsCoutn;
-	int nonPreferredDomainsCount;
+	int preferredDomainsCoutn=0;
+	int nonPreferredDomainsCount=0;
 	int preferredDomains[DOMAINS_NUMBER];
 	int nonPreferredDomains[DOMAINS_NUMBER];
+	int allDomains[DOMAINS_NUMBER];
+	for (int i = 0; i < DOMAINS_NUMBER; i++) {
+		allDomains[i] = i;
+	}
+	
 	for (int i = 0; i < DOMAINS_NUMBER; i++) {
 		if (player.Domainspref[i]) {
 			preferredDomains[preferredDomainsCoutn++] = i;
@@ -573,6 +578,10 @@ int AskQuestions(QList *head, Player player , int count, int difficulty , Partie
 			domainsToAsk = nonPreferredDomains;
 			numberOfDomains = nonPreferredDomainsCount;
 		}
+		if (numberOfDomains == 0) {
+			numberOfDomains = DOMAINS_NUMBER;
+			domainsToAsk = allDomains;
+		}
 		int domainIndex = rand() % numberOfDomains;
 		int domain = domainsToAsk[domainIndex];
 		Question *q = ChooseRandomQuestion(head, domain, difficulty);
@@ -590,15 +599,16 @@ int AskQuestions(QList *head, Player player , int count, int difficulty , Partie
 			printf("%sCorrect! You earned %d points.%s\n", GREEN, score, RESET);
 		} else {
 			printf("%sIncorrect! The correct answer was: %s%s\n", RED, q->answers, RESET);
+			score = 0;
 		}
 
 		if (currentPartieQ !=NULL){
-			(*currentPartieQ) = (PartieQlist*)malloc(sizeof(PartieQlist));
-			(*currentPartieQ)->next = NULL;
-			(*currentPartieQ)->question = q;
-			(*currentPartieQ)->isPreferredDomain = player.Domainspref[q->domain];
-			(*currentPartieQ)->score = score;
-			(*currentPartieQ) = (*currentPartieQ)->next;
+			(**currentPartieQ) = (PartieQlist*)malloc(sizeof(PartieQlist));
+			(**currentPartieQ)->next = NULL;
+			(**currentPartieQ)->question = q;
+			(**currentPartieQ)->isPreferredDomain = player.Domainspref[q->domain];
+			(**currentPartieQ)->score = score;
+			(*currentPartieQ) = &((**currentPartieQ)->next);
 		}
 	}
 	return totalScore;
@@ -616,7 +626,7 @@ bool AskQuestion(Question *q, Player *player) {
 		}
 		int playerChoice;
 		readInt(&playerChoice);
-		return (playerChoice - 1 == randomStart);
+		return ((randomStart + playerChoice -1)%2 == 0); // 0 -> 1, 1 -> 2
 	}
 	case MEDIUM: {
 		int randomStart = rand() % 4;
@@ -627,7 +637,7 @@ bool AskQuestion(Question *q, Player *player) {
 		}
 		int playerChoice;
 		readInt(&playerChoice);
-		return (playerChoice - 1 == randomStart);
+		return ((randomStart + playerChoice -1)%4 == 0); // 0 -> 1, 1 -> 4, 2 -> 3, 3 -> 2
 	}
 	case HARD: {
 		printf("Enter your answer: ");
@@ -662,7 +672,7 @@ void PlayerMenu(QList *Qhead, PList **Phead, PartieList **partieHead) {
 	printf("Enter your player ID: ");
 	int playerId;
 	readInt(&playerId);
-	if (!FindPlayer(*Phead, playerId, player)) {
+	if (!FindPlayer(*Phead, playerId, &player)) {
 		printf("%sPlayer not found!%s\n", RED, RESET);
 		return;
 	}
@@ -801,6 +811,16 @@ void SaveQuestions(QList *head) {
 	}
 	fprintf(file, "THIS FILE USED TO STORE QUESTIONS\n");
 	fprintf(file,"QUESTION FORMAT: \"DIFFICULTY\" \"QUESTION NUMBER\" \"DOMAIN\" \"TEXT\" \"ANSWER1\" \"ANSWER2\" \"ANSWER3\" \"ANSWER4\"\n");
+	fprintf(file, "DOMAINS: ");
+	for (int i = 0; i < DOMAINS_NUMBER; i++) {
+		fprintf(file, "%d:%s ,", i, DOMAINS[i]);
+	}
+	fprintf(file, "\n");
+	fprintf(file, "DIFFICULTY LEVELS: ");
+	for (int i = 0; i < DIFFICULTY_LEVELS_NUMBER; i++) {
+		fprintf(file, "%d:%s ,", i, DIFFICULTY_LEVELS[i]);
+	}
+	fprintf(file, "\n");
 	QList *current = head;
 	while (current != NULL) {
 		char str[MAX_QUESTION_LEGNTH + 100];
@@ -841,6 +861,8 @@ int LoadQuestions(QList **head) {
 	char line[MAX_QUESTION_LEGNTH + 100];
 	fgets(line, sizeof(line), file); // Skip the first line
 	fgets(line, sizeof(line), file); // Skip the second line	
+	fgets(line, sizeof(line), file); // Skip the third line
+	fgets(line, sizeof(line), file); // Skip the fourth line	
 	while (fgets(line, sizeof(line), file)) {
 		// Remove newline character
 		line[strcspn(line, "\n")] = '\0';
@@ -981,4 +1003,28 @@ int LoadParties(PartieList **head, QList *Qhead) {
 	fclose(file);
 	printf("%sParties loaded successfully!%s\n", GREEN, RESET);
 	return nbrParties;
+}
+void showPartieQlist(PartieQlist *head){
+	PartieQlist *current = head;
+	while (current != NULL) {
+		printf("Question ID: %d, Score: %d, Preferred Domain: %s\n",
+			   current->question->qNum,
+			   current->score,
+			   current->isPreferredDomain ? "Yes" : "No");
+		current = current->next;
+	}
+}
+void showPartie(Partie *partie){
+	printf("Player ID: %d\n", partie->playerId);
+	printf("  Level: %d\n", partie->level);
+	printf("  Total Score: %d\n", partie->totalScore);
+	printf("  Questions:\n");
+	showPartieQlist(partie->questions);
+}
+void showPartieList(PartieList *head){
+	PartieList *current = head;
+	while (current != NULL) {
+		showPartie(&current->val);
+		current = current->next;
+	}
 }
