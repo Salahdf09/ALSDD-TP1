@@ -1,0 +1,5 @@
+THIS FILE USED TO STORE QUESTIONS
+QUESTION FORMAT: "DIFFICULTY" "QUESTION NUMBER" "DOMAIN" "TEXT" "ANSWER1" "ANSWER2" "ANSWER3" "ANSWER4"
+"0" "1" "0" "Best Team" "USMA" "MCA"
+"0" "2" "1" "Best Game" "mincraft" "fortnite"
+"2" "3" "2" "best programing language in the world" "c"
